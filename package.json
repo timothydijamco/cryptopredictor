@@ -1,11 +1,18 @@
 {
   "name": "cryptopredictor",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Timothy Dijamco",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "brain.js": "^1.0.0-rc.3",
+    "readline-sync": "^1.4.7",
+    "reddit-oauth": "^1.1.1",
+    "twitter": "^1.7.1"
+  },
+  "devDependencies": {},
+  "description": ""
 }
