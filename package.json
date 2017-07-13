@@ -9,6 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "brain.js": "^1.0.0-rc.3",
+    "mongodb": "^2.2.30",
     "readline-sync": "^1.4.7",
     "reddit-oauth": "^1.1.1",
     "twitter": "^1.7.1"

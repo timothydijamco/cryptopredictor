@@ -62,7 +62,7 @@ function addToPriceHistory(start, end, callback) {
          end: end,
          granularity: '86400'
       }, headers: {
-         'User-Agent': 'Crypto Predictor Node.js"'
+         'User-Agent': 'cryptopredictor node.js"'
       }
    }, function(error, response, body) {
       console.log("  Response received.");
