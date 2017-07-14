@@ -13,7 +13,7 @@ MongoClient.connect(url, function(err, db) {
       '2017-01-05T12:00:00',
       addToPriceHistory.bind(this,
          '2017-01-06T12:00:00',
-         '2017-11-07T12:00:00', // Get the price history up to the user-provided date
+         '2017-11-07T12:00:00', // Get the price history
          function() {
             // console.log(priceHistory);
 
