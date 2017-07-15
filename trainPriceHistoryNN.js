@@ -1,34 +1,30 @@
-var MongoClient = require('mongodb').MongoClient;
 var brain = require("brain.js");
 
-var url = 'mongodb://localhost:27017/cryptopredictor';
+exports.trainNNFromPriceHistory = trainNNFromPriceHistory;
 
-MongoClient.connect(url, function(err, db) {
-   var collection = db.collection('priceHistory');
-   collection.find({}).toArray(function(err, priceHistoryDocs) {
+function trainNNFromPriceHistory(priceHistoryDocs) {
+   var trainingData = generateTrainingData(priceHistoryDocs);
 
-      var trainingData = generateTrainingData(priceHistoryDocs);
-
-      // Create a neural network
-      var net = new brain.NeuralNetwork({
-         hiddenLayers: [4]
-      });
-
-      // Train the neural network on the training data
-      net.train(trainingData, {
-         errorThresh: 0.001,
-         iterations: 250000,
-         log: true,
-         logPeriod: 10000,
-         learningRate: 0.25
-      });
-
-      console.log(net.toJSON());
-
-      db.close();
+   // Create a neural network
+   var net = new brain.NeuralNetwork({
+      hiddenLayers: [4]
    });
-});
 
+   // Train the neural network on the training data
+   net.train(trainingData, {
+      errorThresh: 0.001,
+      iterations: 250000,
+      log: true,
+      logPeriod: 10000,
+      learningRate: 0.25
+   });
+
+   //console.log(net.toJSON());
+
+   return net.toJSON();
+}
+
+// Generates training data using the given price history
 function generateTrainingData(priceHistoryDocs) {
    var trainingData = [];
 
@@ -58,6 +54,7 @@ function generateTrainingData(priceHistoryDocs) {
 
    return trainingData;
 }
+
 
 // Normalizes percentage like 1.05 (meaning 5% increase) or 0.75 (meaning 25%
 // decrease) into a number from 0 to 1.
