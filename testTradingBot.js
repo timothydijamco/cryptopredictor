@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 var request = require('request');
 var brain = require("brain.js");
-var bot = require("./ethbot.js");
+var bot = require("./bots/ethbot.js");
 
 var url = 'mongodb://localhost:27017/cryptopredictor';
 

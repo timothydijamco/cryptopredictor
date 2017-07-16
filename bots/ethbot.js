@@ -17,7 +17,7 @@ exports.makeDecision = function(priceHistoryDocs, currentDateTime) {
 
    // Set up the inputs (in this case, the price changes in the 6 days leading up to the
    // currentDateTime).
-   // The reliance on indices of priceHistoryDocs is buggy because a occaisionally, price
+   // The reliance on indices of priceHistoryDocs is buggy because occaisionally, price
    // history data points may be missing, causing the following input generation code to
    // go out of bounds. Temporarily bypass this error with a try-catch statement.
    try {
