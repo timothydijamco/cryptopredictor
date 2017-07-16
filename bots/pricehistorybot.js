@@ -1,7 +1,15 @@
 var brain = require("brain.js");
 
-exports.makeDecision = function(priceHistoryDocs, currentDateTime) {
-   console.log("  Thinking...");
+var indent = "      ";
+
+exports.makeDecision = function(priceHistoryDocs, currentDateTime, currentDay) {
+   // If first day of simulation, convert all USD to ETH
+   if (currentDay == 1) {
+      return 1;
+   }
+
+   // Otherwise, begin training a neural network
+   console.log(indent + "Thinking...");
    var network = trainNeuralNetwork(priceHistoryDocs, currentDateTime);
 
    // If there was some error in creating the neural network, return 0 (decision: do nothing)
@@ -30,7 +38,7 @@ exports.makeDecision = function(priceHistoryDocs, currentDateTime) {
          inputs.push(normalized);
       }
    } catch (err) {
-      console.log("  Error: " + err);
+      console.log(indent + "Error: " + err);
       return 0;  // Do nothing
    }
 
@@ -41,15 +49,15 @@ exports.makeDecision = function(priceHistoryDocs, currentDateTime) {
    // is predicted. 0.036 means an increase of 3.6% in the ETH price is predicted.
    var prediction = output-0.5;
 
-   // This bot attempts to sell all ETH if a price drop is expected, and attempts to buy as
-   // much ETH as possible if a price increase is expected.
-   if (prediction < 0) {
-      return -1; // Sell max amount of ETH
-   } else if (prediction > 0) {
-      return 1; // Buy max amount of ETH
-   } else {
-      return 0; // Do nothing
+   // This bot attempts to sell ETH if a price drop is expected, and attempts to buy ETH
+   // if a price increase is expected.
+   decision = prediction * 4;
+   if (decision > 1) {
+      decision = 1;
+   } else if (decision < -1) {
+      decision = -1;
    }
+   return decision;
 
 }
 
@@ -94,7 +102,7 @@ function generateTrainingData(priceHistoryDocs, anchorDateTime) {
    }
 
    if (anchorIndex == -1) {
-      console.log("  Error: Could not find anchor datetime");
+      console.log(indent + "Error: Could not find anchor datetime");
       return null;
    }
 
