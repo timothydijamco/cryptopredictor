@@ -2,14 +2,14 @@ var brain = require("brain.js");
 
 var indent = "      ";
 
-exports.run = function(priceHistoryDocs, currentDateTime, currentDay) {
+exports.run = function(priceHistoryDocs, currentDateTime) {
    // Begin training a neural network
    console.log(indent + "Thinking...");
    var network = trainNeuralNetwork(priceHistoryDocs, currentDateTime);
 
-   // If there was some error in creating the neural network, return 0 (decision: do nothing)
+   // If there was some error in creating the neural network, return null
    if (network == null) {
-      return 0;
+      return null;
    }
 
    // Get the day 6 days before currentDateTime. This will be the starting point for getting the
@@ -76,7 +76,7 @@ function trainNeuralNetwork(priceHistoryDocs, anchorDateTime) {
 
 // Generates training data using the given price history
 function generateTrainingData(priceHistoryDocs, anchorDateTime) {
-   //var anchorDateTime = new Date("2017-06-29T20:00:00-0400"); // June 30, 2017 at 8:00 PM EDT
+   //var anchorDateTime = new Date("2017-06-29"); // June 29, 2017
    var anchorDateTimeEpoch = anchorDateTime.getTime()/1000;
    //console.log("anchorDateTimeEpoch: " + anchorDateTimeEpoch);
 
@@ -95,10 +95,10 @@ function generateTrainingData(priceHistoryDocs, anchorDateTime) {
 
    var trainingData = [];
 
-   // This for loop starts at anchorIndex-(14*24) to make sure that the second for loop, which
-   // loops forward, will not go out of bounds. Subtracting by (14*24) ensures that the second
+   // This for loop starts at anchorIndex-(13*24) to make sure that the second for loop, which
+   // loops forward, will not go out of bounds. Subtracting by (13*24) ensures that the second
    // for loop starts at the correct day of the week.
-   for (var i = anchorIndex-(14*24); i >= (8*24); i-=(7*24)) {
+   for (var i = anchorIndex-(13*24); i >= (8*24); i-=(7*24)) {
       var thisWeekInput = [];
       var thisWeekOutput = [];
 
