@@ -3,16 +3,19 @@ var request = require('request');
 
 var url = 'mongodb://localhost:27017/cryptopredictor';
 
-var priceHistory = [];
+// Makes as many queries to GDAX as needed to get all price history data between the given
+// dates. Then saves the fetched price history data to the database, and then calls the
+// callback function.
+exports.run = function(startDate, endDate, callback) {
+   addToPriceHistory(
+      startDate,
+      endDate,
+      432000000, // 5 days in milliseconds
+      function() { savePriceHistory(callback) }
+   );
+};
 
-var startDate = new Date(1467331200000); // July 1, 2016 00:00:00 GMT
-var endDate = new Date(1500076800000); // July 15, 2017 00:00:00 GMT
-addToPriceHistory(
-   startDate,
-   endDate,
-   432000000, // 5 days in milliseconds
-   savePriceHistory
-)
+var priceHistory = [];
 
 // Functions
 function addToPriceHistory(current, end, incrementMs, doneCallback) {
@@ -62,7 +65,7 @@ function addToPriceHistory(current, end, incrementMs, doneCallback) {
    });
 }
 
-function savePriceHistory() {
+function savePriceHistory(callback) {
 
    var documents = [];
    for (var i = 0; i < priceHistory.length; i++) {
@@ -77,14 +80,21 @@ function savePriceHistory() {
       documents.push(doc);
    }
 
-   MongoClient.connect(url, function(err, db) {
-      console.log("Connected to MongoDB server.");
+   if (documents.length > 0) {
+      MongoClient.connect(url, function(err, db) {
+         console.log("Connected to MongoDB server.");
 
-      var collection = db.collection('priceHistory');
-      collection.insertMany(documents, function(err, result) {
-         console.log("Inserted price history into MongoDB (" + documents.length + " items).");
-         db.close();
+         var collection = db.collection('priceHistory');
+         collection.insertMany(documents, function(err, result) {
+            console.log("Inserted price history into MongoDB (" + documents.length + " items).");
+            db.close();
+            if (callback) {
+               callback();
+            }
+         });
       });
-   });
+   } else {
+      console.log("No new price history. No documents inserted into MongoDB.");
+   }
 
 }
