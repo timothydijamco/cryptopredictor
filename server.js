@@ -11,17 +11,20 @@ app.use("/api", router);
 router.route('/prediction').get(function(req, res) {
    var dateString = req.query.date;
 
+   var prediction;
+
    // Get the price history from the database, make a prediction, and return it
    getPriceHistory.run(function(priceHistoryDocs) {
-      var prediction = priceHistoryPredictor.run(
+      prediction = priceHistoryPredictor.run(
          priceHistoryDocs,
          new Date(dateString)
       );
-      res.json({ prediction: prediction });
+      if (prediction) {
+         res.json({ prediction: prediction });
+      } else {
+         res.json({ error: "Could not make prediction." });
+      }
    });
-   if (!prediction) {
-      res.json({ error: "Could not make prediction." });
-   }
 });
 
 app.listen(port);
