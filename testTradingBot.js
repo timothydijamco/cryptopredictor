@@ -8,8 +8,8 @@ var monkeyBot = require("./bots/monkeybot.js");
 
 // Simulation parameters
 var bots = [priceHistoryBot, buyAndHoldBot, monkeyBot];
-var startDateTime = new Date("2017-01-01T20:00:00-0400"); // January 1, 2017 at 8:00 PM EDT (7:00 PM EST)
-var endDateTime = new Date("2017-03-15T20:00:00-0400"); // June 15, 2017 at 8:00 PM EDT
+var startDateTime = new Date("2016-12-01T20:00:00-0400"); // January 1, 2017 at 8:00 PM EDT (7:00 PM EST)
+var endDateTime = new Date("2017-06-15T20:00:00-0400"); // June 15, 2017 at 8:00 PM EDT
 //--
 
 
@@ -74,8 +74,8 @@ function simulate(bots, startDateTime, endDateTime, startingUSD) {
 
          console.log("\n  Bot " + i + ":");
          console.log("    Total value: $" + totalValue.toFixed(2));
-         console.log("      In ETH (" + percentageValueInEthDisplay + "): " + thisBotState.ethAmount);
-         console.log("      In USD (" + percentageValueInUsdDisplay + "): " + thisBotState.usdAmount);
+         console.log("      In ETH (" + percentageValueInEthDisplay + "): " + thisBotState.ethAmount + " ETH");
+         console.log("      In USD (" + percentageValueInUsdDisplay + "): $" + thisBotState.usdAmount);
 
          // Give information to bot and get a decision from it
          var decision = thisBotState.bot.makeDecision(priceHistoryDocsAvailable, currentDateTime, day);
@@ -102,13 +102,13 @@ function simulate(bots, startDateTime, endDateTime, startingUSD) {
                var usdAmountToReceive = ethAmountToSell * currentPrice;
                thisBotState.usdAmount += usdAmountToReceive;
                thisBotState.ethAmount -= ethAmountToSell;
-               console.log("    Sold " + ethAmountToSell + " ETH (" + percentageDisplay + ") at $" + currentPrice + "/ETH, receiving $" + usdAmountToReceive);
+               console.log("    Sold " + ethAmountToSell + " ETH (attempted to use " + percentageDisplay + ") at $" + currentPrice + "/ETH, receiving $" + usdAmountToReceive);
             } else if (decision > 0) { // Buy
                var usdAmountToUse = thisBotState.usdAmount * decision;
                var ethAmountToBuy = usdAmountToUse / currentPrice;
                thisBotState.usdAmount -= usdAmountToUse;
                thisBotState.ethAmount += ethAmountToBuy;
-               console.log("    Used $" + usdAmountToUse + " (" + percentageDisplay + ") at $" + currentPrice + "/ETH, receiving " + ethAmountToBuy + " ETH");
+               console.log("    Bought " + ethAmountToBuy + "ETH at $" + currentPrice + "/ETH, costing $" + usdAmountToUse + " (attempted to use " + percentageDisplay + ")");
             } else {
                console.log("    Did nothing.");
             }

@@ -51,7 +51,7 @@ exports.makeDecision = function(priceHistoryDocs, currentDateTime, currentDay) {
 
    // This bot attempts to sell ETH if a price drop is expected, and attempts to buy ETH
    // if a price increase is expected.
-   decision = prediction * 4;
+   decision = prediction * 5;
    if (decision > 1) {
       decision = 1;
    } else if (decision < -1) {

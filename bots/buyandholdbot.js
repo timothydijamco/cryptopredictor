@@ -1,3 +1,9 @@
 exports.makeDecision = function(priceHistoryDocs, currentDateTime, currentDay) {
-   return 1; // Buy as much ETH as possible
+   // If first day, buy as much ETH as possible
+   if (currentDay == 1) {
+      return 1;
+   }
+
+   // Otherwise, do nothing
+   return 0;
 }

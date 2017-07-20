@@ -6,7 +6,7 @@ var url = 'mongodb://localhost:27017/cryptopredictor';
 var priceHistory = [];
 
 var startDate = new Date(1467331200000); // July 1, 2016 00:00:00 GMT
-var endDate = new Date(1498867200000); // July 1, 2017 00:00:00 GMT
+var endDate = new Date(1500076800000); // July 15, 2017 00:00:00 GMT
 addToPriceHistory(
    startDate,
    endDate,
@@ -57,7 +57,7 @@ function addToPriceHistory(current, end, incrementMs, doneCallback) {
          function() {
             addToPriceHistory(nextCurrent, end, incrementMs, doneCallback);
          },
-         900
+         1250
       );
    });
 }

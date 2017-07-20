@@ -3,6 +3,7 @@ var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/cryptopredictor';
 
 MongoClient.connect(url, function(err, db) {
+   console.log("Error? " + err);
    var collection = db.collection('priceHistory');
    collection.find({}).toArray(function(err, documents) {
       console.log("Error? " + err);
