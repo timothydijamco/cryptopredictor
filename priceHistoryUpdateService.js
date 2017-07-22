@@ -1,5 +1,5 @@
 var schedule = require('node-schedule');
-var insertNewPriceHistory = require("./db-utils/insertNewPriceHistory.js");
+var insertNewPriceHistory = require("./dbUtils/insertNewPriceHistory.js");
 
 console.log("Price History Update Service started.")
 

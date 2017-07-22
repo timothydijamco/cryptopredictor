@@ -1,6 +1,8 @@
 var MongoClient = require('mongodb').MongoClient;
 var request = require('request');
 
+var dateUtils = require("./utils/dateUtils.js");
+
 var priceHistoryBot = require("./bots/pricehistorybot.js");
 var buyAndHoldBot = require("./bots/buyandholdbot.js");
 var monkeyBot = require("./bots/monkeybot.js");
@@ -115,7 +117,7 @@ function simulate(bots, startDateTime, endDateTime, startingUSD) {
          }
       }
 
-      currentDateTime = addDays(currentDateTime, 1);
+      currentDateTime = dateUtils.addDays(currentDateTime, 1);
       day++;
    }
 
@@ -165,11 +167,4 @@ function getPriceAtDateTime(dateTime) {
       }
    }
    return null;
-}
-
-
-function addDays(date, days) {
-  var newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + days);
-  return newDate;
 }

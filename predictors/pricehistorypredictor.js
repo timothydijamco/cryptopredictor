@@ -1,4 +1,5 @@
 var brain = require("brain.js");
+var dateUtils = require("../utils/dateUtils.js");
 
 var indent = "      ";
 
@@ -15,7 +16,7 @@ exports.run = function(priceHistoryDocs, currentDateTime) {
    // Get the day 6 days before currentDateTime. This will be the starting point for getting the
    // 6 inputs (which are the changes in price in the 6 days leading up to the currentDateTime)
    // for making the prediction.
-   var weekStartDateTime = addDays(currentDateTime, -6);
+   var weekStartDateTime = dateUtils.addDays(currentDateTime, -6);
    var weekStartIndex = findIndexOfDateTime(priceHistoryDocs, weekStartDateTime);
 
    // Set up the inputs (in this case, the price changes in the 6 days leading up to the
@@ -148,11 +149,4 @@ function findIndexOfDateTime(priceHistoryDocs, dateTime) {
       }
    }
    return null;
-}
-
-
-function addDays(date, days) {
-  var newDate = new Date(date);
-  newDate.setDate(newDate.getDate() + days);
-  return newDate;
 }

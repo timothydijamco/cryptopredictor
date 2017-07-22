@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var getPriceHistory = require("./db-utils/getPriceHistory.js");
+var getPriceHistory = require("./dbUtils/getPriceHistory.js");
 var priceHistoryPredictor = require("./predictors/priceHistoryPredictor.js");
 
 var port = process.env.PORT || 8080;
