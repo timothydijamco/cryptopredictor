@@ -1,11 +1,9 @@
 var getPriceHistory = require("./getPriceHistory.js");
 var insertPriceHistory = require("./insertPriceHistory.js");
 
-exports.run = insertNewPriceHistory;
-
 // Updates the price history data stored in the database with any new price
 // history data from GDAX.
-function insertNewPriceHistory(callback) {
+exports.run = function(callback) {
    getPriceHistory.run(function(priceHistoryDocs) {
 
       // Make start date either an hour after the latest entry in priceHistoryDocs, or July 1, 2016
