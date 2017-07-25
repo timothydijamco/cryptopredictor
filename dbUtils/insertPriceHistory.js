@@ -10,7 +10,7 @@ exports.run = function(startDate, endDate, callback) {
    addToPriceHistory(
       startDate,
       endDate,
-      432000000, // 5 days in milliseconds
+      518400000, // 6 days in milliseconds
       function() { savePriceHistory(callback) }
    );
 };
