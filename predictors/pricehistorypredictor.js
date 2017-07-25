@@ -34,7 +34,7 @@ exports.run = function(priceHistoryDocs, currentDateTime) {
          inputs.push(normalized);
       }
    } catch (err) {
-      console.log(indent + "Error: " + err);
+      //console.log(indent + "Error: " + err);
       return 0;  // Do nothing
    }
 
@@ -77,45 +77,55 @@ function trainNeuralNetwork(priceHistoryDocs, anchorDateTime) {
 
 // Generates training data using the given price history
 function generateTrainingData(priceHistoryDocs, anchorDateTime) {
+   var trainingData = [];
+
    //var anchorDateTime = new Date("2017-06-29"); // June 29, 2017
-   var anchorDateTimeEpoch = anchorDateTime.getTime()/1000;
-   //console.log("anchorDateTimeEpoch: " + anchorDateTimeEpoch);
+   //console.log(anchorDateTime);
 
-   var anchorIndex = -1;
-   for (var i = priceHistoryDocs.length-1; i >= 0; i--) {
-      if (priceHistoryDocs[i].time == anchorDateTimeEpoch) {
-         anchorIndex = i;
-         break;
-      }
-   }
-
-   if (anchorIndex == -1) {
+   var anchorIndex = findIndexOfDateTime(priceHistoryDocs, anchorDateTime);
+   if (!anchorIndex) {
       console.log(indent + "Error: Could not find anchor datetime");
       return null;
    }
 
-   var trainingData = [];
+   // Find the earliest date time (at which point we should stop looking for more data)
+   var earliestDateTime = new Date(priceHistoryDocs[0].time*1000);
 
-   // This for loop starts at anchorIndex-(13*24) to make sure that the second for loop, which
-   // loops forward, will not go out of bounds. Subtracting by (13*24) ensures that the second
-   // for loop starts at the correct day of the week.
-   for (var i = anchorIndex-(13*24); i >= (8*24); i-=(7*24)) {
+   // Find the first weekly anchor date time, which is 13 days before the anchor date time.
+   // The weekly anchor date time will be decremented by 7 days over and over again and will
+   // serve as the starting point day-of-the-week for gathering training data on each week.
+   var weeklyAnchorDateTime = dateUtils.addDays(anchorDateTime, -13);
+
+   while (weeklyAnchorDateTime > earliestDateTime) { // While there is still training data
+
+      // Find the index of the weekly anchor date time in priceHistoryDocs, or skip this week if it could not be found
+      var weeklyAnchorIndex = findIndexOfDateTime(priceHistoryDocs, weeklyAnchorDateTime);
+      if (!weeklyAnchorIndex) {
+         console.log(indent + "Warning: Could not find weekly anchor datetime");
+         weeklyAnchorDateTime = dateUtils.addDays(weeklyAnchorDateTime, -7);
+         continue;
+      }
+
       var thisWeekInput = [];
       var thisWeekOutput = [];
 
+      // Traverse through the days of this week and place the price history data of those
+      // days into the inputs array.
       for (var j = 0; j < 7; j++) {
-         //console.log("     Day " + (j+1) + ":" + (new Date(priceHistoryDocs[i+(j*24)].time * 1000)));
-         var currentPrice = priceHistoryDocs[i+(j*24)].open;
-         var previousPrice = priceHistoryDocs[i+((j-1)*24)].open;
+         //console.log("     Day " + (j+1) + ":" + (new Date(priceHistoryDocs[weeklyAnchorIndex+(j*24)].time * 1000)));
+         var currentPrice = priceHistoryDocs[weeklyAnchorIndex+(j*24)].open;
+         var previousPrice = priceHistoryDocs[weeklyAnchorIndex+((j-1)*24)].open;
          var normalized = generateNormalized(currentPrice, previousPrice);
          thisWeekInput.push(normalized);
       }
 
-      //console.log("2nd to last day: " + (new Date(priceHistoryDocs[i+(6*24)].time * 1000)));
-      //console.log("Last day: " + (new Date(priceHistoryDocs[i+(7*24)].time * 1000)));
+      //console.log("2nd to last day: " + (new Date(priceHistoryDocs[weeklyAnchorIndex+(6*24)].time * 1000)));
+      //console.log("Last day: " + (new Date(priceHistoryDocs[weeklyAnchorIndex+(7*24)].time * 1000)));
 
-      var lastDayPrice = priceHistoryDocs[i+(7*24)].open;
-      var secondToLastDayPrice = priceHistoryDocs[i+(6*24)].open;
+      // Take the change of price between the 2nd-to-last day and the last day as the
+      // expected output value.
+      var lastDayPrice = priceHistoryDocs[weeklyAnchorIndex+(7*24)].open;
+      var secondToLastDayPrice = priceHistoryDocs[weeklyAnchorIndex+(6*24)].open;
       var normalized = generateNormalized(lastDayPrice, secondToLastDayPrice);
       thisWeekOutput.push(normalized);
 
@@ -125,6 +135,9 @@ function generateTrainingData(priceHistoryDocs, anchorDateTime) {
          output: thisWeekOutput
       };
       trainingData.push(thisWeekData);
+
+      // Find the next weekly anchor date time--seven days before the current one.
+      weeklyAnchorDateTime = dateUtils.addDays(weeklyAnchorDateTime, -7);
    }
 
    return trainingData;
