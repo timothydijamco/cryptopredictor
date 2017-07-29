@@ -1,9 +1,9 @@
 # cryptopredictor
 Cryptocurrency price prediction tools
 
-# Usage
+## Usage
 ### Simple usage
-You can run the simple priceHistory script, which asks you for a date to predict the ETH price change in. It queries the price history data from GDAX every time you run the script, so it does not require MongoDB to be set up.
+You can run the simple priceHistory script, which asks you for a date The script will make a prediction on how the price of ETH will change in that day. It queries the price history data from GDAX every time you run the script, so it does not require MongoDB to be set up.
 ```
 node priceHistory.js
 ```
@@ -12,9 +12,10 @@ node priceHistory.js
 For the more advanced scripts, a MongoDB database to store price history data should be created.
  * It should be configured to run on the same host as you plan to run the Node.js scripts on and should be on port 27017.
  * It should contain a database named `cryptopredictor` that contains a collection `priceHistory`.
+
 If you choose a different configuration, you can adjust the MongoDB database configuration used by editing the scripts in /dbUtils.
 
-You need to then run a script to query GDAX for the price history data and add the data to MongoDB:
+You need to then run a script that queries GDAX for the price history data and adds the price history data to MongoDB:
 ```
 node -e 'require("./dbUtils/insertNewPriceHistory.js").run()'
 ```
