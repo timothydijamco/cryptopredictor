@@ -12,10 +12,10 @@ console.log(""); // Newline
 // Get ETH price history, then create, train, and use neural network
 var priceHistory = [];
 addToPriceHistory(         // The GDAX API limits the # of results to 200, so we need to use two API requests
-   '2016-07-01T12:00:00',
-   '2017-01-05T12:00:00',
+   '2017-07-01T12:00:00',
+   '2018-01-05T12:00:00',
    addToPriceHistory.bind(this,
-      '2017-01-06T12:00:00',
+      '2018-01-06T12:00:00',
       date + 'T12:00:00', // Get the price history up to the user-provided date
       function() {
          // Generate training data from the price history
@@ -67,6 +67,7 @@ function addToPriceHistory(start, end, callback) {
    }, function(error, response, body) {
       console.log("  Response received.");
       var json = JSON.parse(body);
+      console.log("  json: " + json);
       json = json.reverse(); // Reverse the array so that older data is first
       priceHistory = priceHistory.concat(json);
       callback();
